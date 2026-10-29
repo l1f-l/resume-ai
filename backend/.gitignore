@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.local
+
+# 向量索引（启动时由 jobs_seed 自动重建，不入库）
+data/chroma/
+
+# 运行时数据：用户库、JWT 密钥、投递发件箱、日志
+data/*.db
+data/*.db-*
+data/.jwt_secret
+data/outbox/
+data/*.log
+
+# 样例生成产物（可随时重新生成）
+samples/out_resume.*
+samples/shots/

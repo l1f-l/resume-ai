@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>张明 的简历</title>
+<style>
+  :root {
+    --ink: #111827; --sub: #4b5563; --line: #e5e7eb;
+    --accent: #0f766e; --red: #b91c1c; --green: #047857;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #f3f4f6; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB",
+                 "Source Han Sans SC", "Noto Sans CJK SC", Arial, sans-serif;
+    color: var(--ink); line-height: 1.62; font-size: 13.5px;
+  }
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto; background: #fff;
+    padding: 16mm 15mm 14mm; box-shadow: 0 6px 28px rgba(15,23,42,.10);
+  }
+  /* 嵌在 iframe 里预览时按容器宽度自适应，打印仍保持 A4 */
+  @media screen and (max-width: 860px) {
+    .page { width: min(210mm, calc(100% - 20px)); padding: 12mm 10mm; margin: 10px auto; }
+  }
+  header { border-bottom: 2px solid var(--ink); padding-bottom: 10px; margin-bottom: 14px; }
+  .name-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 27px; margin: 0; letter-spacing: .5px; font-weight: 700; }
+  .headline { color: var(--accent); font-weight: 600; font-size: 14px; }
+  .contact { color: var(--sub); font-size: 12px; margin-top: 6px; word-break: break-all; }
+  .badge {
+    float: right; font-size: 11px; border: 1px solid var(--line); color: var(--sub);
+    padding: 2px 8px; border-radius: 999px; background: #f9fafb;
+  }
+  .badge.ok { color: var(--green); border-color: #a7f3d0; background: #ecfdf5; }
+  .badge.diff { color: #92400e; border-color: #fde68a; background: #fffbeb; }
+  section { margin-bottom: 15px; }
+  h2 {
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 7px; padding-bottom: 4px; border-bottom: 1px solid var(--line); font-weight: 700;
+  }
+  .summary { margin: 0; color: #1f2937; }
+  .skills { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .skills span {
+    background: #f1f5f9; border: 1px solid var(--line); border-radius: 4px;
+    padding: 1px 7px; font-size: 12px; color: #334155;
+  }
+  .item { margin-bottom: 11px; page-break-inside: avoid; }
+  .item-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .head-left { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; min-width: 0; }
+  .org { font-weight: 600; }
+  .role { color: var(--sub); font-size: 12.5px; }
+  .period { color: var(--sub); font-size: 12px; white-space: nowrap; }
+  ul { margin: 4px 0 0; padding-left: 17px; }
+  li { margin: 2px 0; }
+  li::marker { color: #9ca3af; }
+  li.diff { list-style: none; margin-left: -14px; }
+  li.diff .del { color: var(--red); text-decoration: line-through; opacity: .75; display: block; }
+  li.diff .ins { color: var(--green); display: block; }
+  li.diff .ins::before { content: "→ "; color: #9ca3af; text-decoration: none; }
+  .edu-major { color: var(--sub); font-size: 12.5px; }
+  footer { margin-top: 18px; padding-top: 8px; border-top: 1px solid var(--line);
+            color: #9ca3af; font-size: 10.5px; display: flex; justify-content: space-between; }
+  @page { size: A4; margin: 0; }
+  @media print {
+    html, body { background: #fff; }
+    .page { box-shadow: none; margin: 0; width: auto; min-height: auto; padding: 14mm 14mm; }
+    .badge { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <span class="badge ok">STAR 优化版</span>
+      <div class="name-row">
+        <h1>张明</h1>
+        <span class="headline">用户增长产品经理</span>
+      </div>
+      <div class="contact">13800138000 · zhangming@example.com · 上海 · github.com/zhangming</div>
+    </header>
+    <section><h2>个人简介</h2><p class="summary">5 年互联网产品经验，聚焦电商与社区内容增长，主导 320 万用户量级增长活动并带动 GMV 提升 28%、ROI 3.2；擅长用 SQL 与 AB 实验做漏斗归因，从 0 到 1 搭建用户分层与指标体系。</p></section>
+    <section><h2>专业技能</h2><p class="skills"><span>SQL</span><span>项目管理</span><span>用户增长</span><span>Axure</span><span>Figma</span><span>数据分析</span><span>用户调研</span><span>A/B测试</span></p></section>
+    <section><h2>工作经历</h2><div class="item"><div class="item-head"><div class="head-left"><span class="org">字节跳动</span><span class="role">高级产品经理</span></div><span class="period">2021.03-至今</span></div><ul><li>主导抖音电商 6 场分层增长活动，联动多渠道组合触达 320 万用户，带动 GMV 提升 28%、ROI 达 3.2。</li><li>搭建用户分层与生命周期触达体系，重构推送策略使触达转化率从 2.1% 升至 3.4%，推送成本下降 18%。</li><li>推动研发、运营、投放三方跨部门协作，将增长方案沉淀为 SOP 并被 3 个团队复用，月均节省 12 人天。</li><li>落地增长数据看板并迭代指标体系，服务 60 余名运营日均查看 300 次，支撑漏斗分析与归因决策。</li></ul></div><div class="item"><div class="item-head"><div class="head-left"><span class="org">小红书</span><span class="role">产品经理</span></div><span class="period">2019.07-2021.02</span></div><ul><li>主导社区内容推荐产品设计，围绕点击与互动指标迭代策略，推动内容消费转化率提升约 1 成量级。</li><li>量化用户调研与竞品分析结论，输出 20 余份需求文档并推动排期落地，需求按期交付率提升约 3 成。</li><li>重构新用户引导流程与新手任务结构，缩短关键路径步骤，新用户引导完成率提升约 15%。</li></ul></div></section>
+    <section><h2>项目经历</h2><div class="item"><div class="item-head"><div class="head-left"><span class="org">新用户 7 日留存提升项目</span></div><span class="period">2022.05-2022.11</span></div><ul><li>主导新用户 7 日留存提升项目，设计分层任务体系并改版引导链路，7 日留存提升约 5 个百分点。</li><li>推动 AB 实验全流程落地，完成分流设计与归因复盘并迭代 3 轮策略，项目上线提前 2 周、节省约 40 人天。</li></ul></div></section>
+    <section><h2>教育背景</h2><div class="item edu"><div class="item-head"><div class="head-left"><span class="org">复旦大学</span></div><span class="period">本科 · 2015.09-2019.06</span></div><div class="edu-major">信息管理与信息系统 </div></div></section>
+    <section><h2>证书 / 荣誉</h2><ul><li>PMP 项目管理专业人士</li></ul></section>
+    <footer>
+      <span>ResumePilot · 由 AI 优化生成</span>
+      <span>2026-10-18</span>
+    </footer>
+  </div>
+</body>
+</html>
