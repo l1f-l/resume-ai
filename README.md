@@ -28,7 +28,7 @@
 ## 2. 目录结构
 
 ```
-resume ai/
+resume-ai/
 ├── docs/ResumePilot-Pro-技术方案.md    # 重构方案（表结构/路由/算法/分阶段计划）
 ├── backend/
 │   ├── app/
@@ -113,6 +113,21 @@ PATCH  /api/applications/{id}               GET /api/applications/{id}/events|re
 
 > 端口说明：本项目固定用 **8001（后端）/ 3001（前端）**，避开常驻的 3000/8000。
 
+**① 安装依赖**（首次克隆后执行一次）
+
+```bash
+cd backend
+python -m venv .venv
+.venv/Scripts/pip install -r requirements.txt -r requirements-rag.txt -r requirements-ocr.txt
+cp .env.example .env          # 填入 DEEPSEEK_API_KEY；不填则自动走演示引擎
+
+cd ../frontend
+npm install
+cp .env.example .env.local    # 可选，默认已指向 127.0.0.1:8001
+```
+
+**② 启动**
+
 ```bash
 # 后端
 cd backend
@@ -125,6 +140,17 @@ API_PROXY=http://127.0.0.1:8001 ./node_modules/.bin/next start -p 3001
 ```
 
 打开 http://127.0.0.1:3001 → 注册账号 → 上传简历。
+
+> 首次启动会自动建表并幂等导入 50 条岗位、建立 Chroma 索引，无需手动初始化数据。
+> `backend/data/` 下的数据库、向量索引、发件箱均在 `.gitignore` 中，克隆后自动生成。
+
+**`DEEPSEEK_API_KEY`**（`backend/.env`，不配也能跑）：
+
+```env
+DEEPSEEK_API_KEY=sk-xxxxxxxx
+```
+
+不配置时 LLM 调用回退到 `mock_engine`（确定性演示输出），全流程依然可走通。
 
 **SMTP 配置**（`backend/.env`，不配也能跑）：
 
