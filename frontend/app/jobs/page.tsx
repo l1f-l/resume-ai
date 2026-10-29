@@ -155,7 +155,7 @@ export default function JobsPage() {
             {items.map((job) => (
               <Link
                 key={job.id}
-                href={`/jobs/${job.id}`}
+                href={`/jobs/detail/?id=${job.id}`}
                 className="card group flex flex-col !rounded-xl p-3.5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
               >
                 <div className="flex items-start justify-between gap-2">

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Spinner } from "@/components/ui";
 import { jobDetail, listSessions, uploadResume } from "@/lib/api";
@@ -17,10 +17,25 @@ interface SessionRow {
   updated_at: number;
 }
 
+/** 静态导出不支持动态路由段，岗位详情改为 /jobs/detail?id=job_017 */
 export default function JobDetailPage() {
-  const params = useParams();
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Spinner />
+        </div>
+      }
+    >
+      <JobDetailInner />
+    </Suspense>
+  );
+}
+
+function JobDetailInner() {
+  const params = useSearchParams();
   const router = useRouter();
-  const jobId = String(params?.id ?? "");
+  const jobId = params.get("id") ?? "";
 
   const [job, setJob] = useState<Job | null>(null);
   const [sessions, setSessions] = useState<SessionRow[]>([]);
@@ -50,7 +65,7 @@ export default function JobDetailPage() {
     setError(null);
     try {
       const res = await uploadResume(file, "", job.id);
-      router.push(`/workspace/${res.session_id}?autorun=1`);
+      router.push(`/workspace/?sid=${res.session_id}&autorun=1`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "上传失败");
       setBusy(false);
@@ -72,7 +87,7 @@ export default function JobDetailPage() {
       <AppShell>
         <div className="card !rounded-xl p-8 text-center">
           <p className="text-[13px] font-medium text-slate-600">岗位不存在</p>
-          <Link href="/jobs" className="mt-3 inline-block text-[12px] text-brand-700 hover:underline">
+          <Link href="/jobs/" className="mt-3 inline-block text-[12px] text-brand-700 hover:underline">
             返回岗位广场
           </Link>
         </div>
@@ -82,7 +97,7 @@ export default function JobDetailPage() {
 
   return (
     <AppShell>
-      <Link href="/jobs" className="text-[11.5px] text-slate-400 hover:text-slate-600">
+      <Link href="/jobs/" className="text-[11.5px] text-slate-400 hover:text-slate-600">
         ← 返回岗位广场
       </Link>
 
@@ -174,7 +189,7 @@ export default function JobDetailPage() {
                 {sessions.map((s) => (
                   <Link
                     key={s.id}
-                    href={`/workspace/${s.id}?job=${job.id}&autorun=1`}
+                    href={`/workspace/?sid=${s.id}&job=${job.id}&autorun=1`}
                     className="flex items-center gap-2 rounded-lg border border-slate-100 px-2.5 py-2 transition hover:border-brand-200 hover:bg-brand-50/40"
                   >
                     <span className="text-[12px]">📄</span>

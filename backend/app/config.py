@@ -67,7 +67,9 @@ class Settings:
     # --- 用户体系（JWT） ---
     jwt_secret_raw: str = os.getenv("JWT_SECRET", "").strip()
     jwt_ttl_hours: int = int(os.getenv("JWT_TTL_HOURS", "168"))  # 7 天
-    jwt_cookie: str = "rp_token"
+    # Cookie 名不能与托管平台的分享凭证重名（平台会占掉 rp_token），否则会被覆盖
+    jwt_cookie: str = "rp_auth"
+    token_header: str = "x-rp-token"
 
     # --- 邮件（模拟投递） ---
     smtp_host: str = os.getenv("SMTP_HOST", "").strip()

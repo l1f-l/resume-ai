@@ -58,7 +58,7 @@ export default function DashboardPage() {
     setUploading(true);
     try {
       const res = await uploadResume(file, jd);
-      router.push(`/workspace/${res.session_id}`);
+      router.push(`/workspace/?sid=${res.session_id}`);
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "上传失败");
       setUploading(false);
@@ -145,7 +145,7 @@ export default function DashboardPage() {
                 {sessions.map((s) => (
                   <Link
                     key={s.id}
-                    href={`/workspace/${s.id}`}
+                    href={`/workspace/?sid=${s.id}`}
                     className="flex items-center gap-3 px-3.5 py-2.5 transition hover:bg-slate-50"
                   >
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-slate-100 text-[12px]">

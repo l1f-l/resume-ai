@@ -1,7 +1,7 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { ApplyDialog } from "@/components/ApplyDialog";
 import { ChatPanel } from "@/components/ChatPanel";
 import { DiagnosisPanel } from "@/components/DiagnosisPanel";
@@ -53,10 +53,25 @@ const uid = () =>
     ? crypto.randomUUID()
     : Math.random().toString(36).slice(2);
 
+/** 静态导出不支持动态路由段，工作台改为 /workspace/?sid=xxx */
 export default function WorkspacePage() {
-  const params = useParams();
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Spinner />
+        </div>
+      }
+    >
+      <WorkspaceInner />
+    </Suspense>
+  );
+}
+
+function WorkspaceInner() {
+  const params = useSearchParams();
   const router = useRouter();
-  const sid = String(params?.sid ?? "");
+  const sid = params.get("sid") ?? "";
 
   const [stage, setStage] = useState<Stage>("NEW");
   const [messages, setMessages] = useState<ChatMessage[]>([]);

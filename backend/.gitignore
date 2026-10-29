@@ -18,3 +18,6 @@ data/*.log
 # 样例生成产物（可随时重新生成）
 samples/out_resume.*
 samples/shots/
+
+# 前端静态导出产物（部署上传用，由 frontend/out 复制而来，不入库）
+web/

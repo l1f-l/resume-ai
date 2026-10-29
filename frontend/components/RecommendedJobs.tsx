@@ -130,7 +130,7 @@ export function RecommendedJobs({
                   {active ? "重新生成报告" : "生成匹配报告 →"}
                 </button>
                 <a
-                  href={`/jobs/${item.job.id}`}
+                  href={`/jobs/detail/?id=${item.job.id}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-[11px] text-slate-400 underline-offset-2 hover:text-slate-600 hover:underline"

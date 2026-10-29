@@ -84,12 +84,24 @@ def decode_token(token: str) -> str:
 
 
 def _extract_token(request: Request) -> str:
-    header = request.headers.get("authorization") or ""
-    if header.lower().startswith("bearer "):
-        return header[7:].strip()
+    """按可靠性从高到低取 token。
+
+    顺序不是随手排的：部分托管平台的网关会给每个请求注入自己的
+    `Authorization: Bearer ...` 与同名 Cookie，把业务凭证覆盖掉。
+    因此先读自定义头与专属 Cookie，最后才退回 Authorization。
+    """
+    custom = request.headers.get(settings.token_header)
+    if custom:
+        return custom.strip()
+
     cookie = request.cookies.get(settings.jwt_cookie)
     if cookie:
         return cookie
+
+    header = request.headers.get("authorization") or ""
+    if header.lower().startswith("bearer "):
+        return header[7:].strip()
+
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="请先登录",

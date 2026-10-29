@@ -4,6 +4,8 @@
 
 相比 v1「单机简历工具」，Pro 版补齐了用户体系、岗位数据池、双向匹配与投递闭环。
 
+**[在线体验](https://resumepilot.app.workbuddy.host/?sharecode=QWFZWUI5ET)** · 打开即用，注册即可上传简历（无需配置，LLM 已接入）
+
 ---
 
 ## 1. 功能全景
@@ -162,6 +164,29 @@ SMTP_PASSWORD=授权码          # 不是登录密码
 ```
 
 不配置时投递走「演示模式」：邮件 + PDF 写入 `backend/data/outbox/`，`mail_status=simulated`，前端可下载 `.eml`。
+
+**③ 单端口部署（线上形态）**
+
+线上只有**一个 Python 进程**，前端是静态产物，无需 Node 运行时：
+
+```bash
+cd frontend && NEXT_PUBLIC_API_BASE= npx next build   # 关键：显式设为空串 → 走同源 /api/*
+cd .. && rm -rf backend/web && cp -r frontend/out backend/web
+cd backend && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+```
+
+`app/main.py` 会按 `STATIC_DIR` → `backend/web` → `./web` → `frontend/out` 顺序探测静态目录并挂到根路径，
+`/api/*` 与 `/docs` 仍由 FastAPI 处理。为此前端做了两处妥协：
+
+- 删除 `middleware.ts`，路由守卫改为客户端（`AuthProvider` 检测无 token 即跳登录）；
+- 动态路由改为查询参数：`/workspace/?sid=xxx`、`/jobs/detail/?id=job_017`，因为静态导出不支持动态段。
+
+**部署环境需要注意的两个坑**（已修复，改代码时别退回去）：
+
+- `JWT_SECRET` 必须显式配置。默认实现是把密钥写入 `data/.jwt_secret`，在多实例或无持久盘的环境里
+  每个实例各生成一份，表现为「登录成功但下一个请求 401」。
+- 凭证除了 `Authorization: Bearer` 还支持 `X-RP-Token` 头与 `rp_auth` Cookie。部分托管平台的网关会
+  给每个请求注入自己的 `Authorization` 与同名 Cookie，把业务凭证覆盖掉。
 
 ---
 

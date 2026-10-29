@@ -9,14 +9,23 @@ import type {
   User,
 } from "./types";
 
-/** 直连 FastAPI（SSE 需要真正的流式，不经 Next 代理缓冲） */
+/**
+ * 直连 FastAPI。
+ * - 开发态（两个端口）：NEXT_PUBLIC_API_BASE=http://127.0.0.1:8001
+ * - 部署态（单端口同源）：NEXT_PUBLIC_API_BASE 显式设为空串，走相对路径 /api/*
+ * 注意：空串必须被视为「有效值」，否则会掉回默认的 localhost。
+ */
+const RAW_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "") || "http://127.0.0.1:8000";
+  RAW_BASE === undefined ? "http://127.0.0.1:8000" : RAW_BASE.replace(/\/$/, "");
 
-/** 预览 / 导出走同源代理：iframe 不跨域，下载能保留文件名 */
-export const PROXY_BASE = "/backend";
+/** 预览 / 导出与接口同源，部署后无需再经 Next 代理 */
+export const PROXY_BASE = API_BASE;
 
-const TOKEN_KEY = "rp_token";
+const TOKEN_KEY = "rp_auth";
+/** 自定义请求头：部分托管网关会覆盖 Authorization，这个头不会被拦 */
+const TOKEN_HEADER = "X-RP-Token";
 
 // --------------------------------------------------------------------------- //
 // 凭证
@@ -30,19 +39,21 @@ export function setToken(token: string) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(TOKEN_KEY, token);
   // 同时写 Cookie：middleware 做路由守卫、iframe 预览与 <a download> 无法带自定义头
-  document.cookie = `${"rp_token"}=${token}; path=/; max-age=${7 * 86400}; SameSite=Lax`;
+  document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=${7 * 86400}; SameSite=Lax`;
 }
 
 export function clearToken() {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(TOKEN_KEY);
   window.localStorage.removeItem("rp_sid");
-  document.cookie = `${"rp_token"}=; path=/; max-age=0; SameSite=Lax`;
+  document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
 }
 
 function authHeaders(extra?: Record<string, string>): Record<string, string> {
   const token = getToken();
-  return token ? { ...extra, Authorization: `Bearer ${token}` } : { ...extra };
+  if (!token) return { ...extra };
+  // 两种都带：Authorization 兼容本地直连，X-RP-Token 抗网关覆盖
+  return { ...extra, Authorization: `Bearer ${token}`, [TOKEN_HEADER]: token };
 }
 
 async function req<T>(path: string, init: RequestInit = {}): Promise<T> {

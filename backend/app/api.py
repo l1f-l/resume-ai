@@ -91,7 +91,7 @@ async def health() -> dict:
         "db": {"path": str(settings.db_path), "sessions": store.db.count()},
         "rag": {"backend": template_store.backend, "templates": size},
         "jobs": {"total": job_store.count(), "index": job_store.backend},
-        "auth": {"mode": "jwt", "cookie": settings.jwt_cookie},
+        "auth": {"mode": "jwt", "cookie": settings.jwt_cookie, "header": settings.token_header},
         "mail": {"smtp_ready": settings.smtp_ready, "host": settings.smtp_host or ""},
         "stages": [Stage.LABELS[s] for s in Stage.ALL],
     }
